@@ -1,0 +1,11 @@
+[
+ {"nr":1,"bron":"Gezondheidsraad — Evaluatie van de voedingsnormen voor vitamine D (2012)","onderwerp":"Vitamine D 10/20 µg","url":"https://huisartsleiden.praktijkinfo.nl/extra-vitamine-d","type":"richtlijn"},
+ {"nr":2,"bron":"FrieslandCampina Institute — Factsheet sarcopenie (2021), met PROT-AGE/ESPEN","onderwerp":"Eiwit 1,0–1,2 g/kg bij ouderen","url":"https://www.frieslandcampinainstitute.com/uploads/sites/2/2022/12/FC-Institute-Factsheet-Sarcoponie-2021.pdf","type":"factsheet"},
+ {"nr":3,"bron":"Huisarts & Wetenschap — Sarcopenie in de huisartsenpraktijk","onderwerp":"Eiwit per maaltijd, eiwitgehalte voedingsmiddelen","url":"https://henw.org/node/19802","type":"vakblad"},
+ {"nr":4,"bron":"Candow/Devries e.a. — Creatine during resistance training in older adults, meta-analyse (2014)","onderwerp":"Creatine + krachttraining: +1,3 kg vetvrije massa","url":"https://pubmed.ncbi.nlm.nih.gov/24576864/","type":"meta-analyse"},
+ {"nr":5,"bron":"Fit.nl — Creatine: dosering en veiligheid","onderwerp":"3 g/dag, geen laadfase, EU-claim 55+","url":"https://www.fit.nl/creatine","type":"samenvatting"},
+ {"nr":6,"bron":"Dupont e.a. — The role of omega-3 in the prevention and treatment of sarcopenia (2019)","onderwerp":"Omega-3 en spiermassa bij ouderen","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC6583677","type":"review"},
+ {"nr":7,"bron":"Voedingscentrum — Voedingsnormen vitamines en mineralen","onderwerp":"Calcium, B12, vitamine C, magnesium, vocht","url":"https://www.voedingscentrum.nl","type":"richtlijn"},
+ {"nr":8,"bron":"Cochrane — Magnesium for skeletal muscle cramps (2020)","onderwerp":"Magnesium: geen duidelijk effect op krampen","url":"https://pubmed.ncbi.nlm.nih.gov/22972143/","type":"review"},
+ {"nr":9,"bron":"Gezondheidsraad — Beweegrichtlijnen 2017","onderwerp":"150 min matig intensief + 2× spierversterkend per week","url":"https://www.gezondheidsraad.nl/sites/default/files/grpublication/samenvatting_beweegrichtlijnen_2017_1.pdf","type":"richtlijn"}
+]

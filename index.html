@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spier &amp; Sport</title>
+<meta name="theme-color" content="#0b0f17">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Spier &amp; Sport</h1>
+    <nav class="nav"><a class="on" href="/">Dashboard</a><a href="/logboek.html">Logboek</a></nav>
+  </header>
+  <p class="lead">Eén ochtend per week krachttraining, dagelijks licht bewegen en genoeg eiwit. Profiel en voortgang komen uit je logboek.</p>
+
+  <div class="tabs" role="tablist">
+    <button type="button" class="tab" data-tab="overzicht" aria-selected="true">Overzicht</button>
+    <button type="button" class="tab" data-tab="supplementen" aria-selected="false">Supplementen</button>
+    <button type="button" class="tab" data-tab="bronnen" aria-selected="false">Bronnen</button>
+  </div>
+
+  <section id="tab-overzicht" data-tabpage="overzicht" style="display:grid;gap:16px">
+    <div class="card">
+      <p class="note" id="prof-note">Profiel: standaardwaarden (man, 60 jaar, 80 kg). Vul je profiel in het logboek in; dan passen vitamine D, calcium en het eiwitdoel zich aan.</p>
+      <div class="tiles">
+        <div class="tile"><div class="k">Eiwitdoel per dag</div><div class="v" id="eiwit">–</div><div class="s">gram, bij 1,0–1,2 g per kg</div></div>
+        <div class="tile"><div class="k">Eiwit per maaltijd</div><div class="v">25–30</div><div class="s">gram, 3× per dag</div></div>
+        <div class="tile"><div class="k">Krachttraining</div><div class="v" id="n-kracht">–</div><div class="s">per week · doel na 4–6 wk: 2</div></div>
+        <div class="tile"><div class="k">Beweegminuten</div><div class="v" id="n-min">–</div><div class="s">per week · richtlijn 150</div></div>
+      </div>
+      <p class="advies" id="advies-d"></p>
+    </div>
+
+    <div class="two">
+      <div class="card">
+        <h2>Weekoverzicht</h2>
+        <p class="note">Zaterdagochtend is de sportschooldag; verschuif gerust, met minstens een rustdag tussen kracht en zware inspanning.</p>
+        <div class="tbox"><table id="t-week"><thead><tr><th>Dag</th><th>Activiteit</th><th>Min</th><th>Doel</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card">
+        <h2>Beweegminuten per dag</h2>
+        <div id="chart-week" style="min-height:160px"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Trainingsdag: full-body programma (ochtend)</h2>
+      <p class="note">Bij één training per week werkt full-body beter dan boven/onder gesplitst. Opbouw: eerst meer herhalingen, dan pas zwaarder. Rust 60–90 sec tussen sets.</p>
+      <div class="tbox"><table id="t-prog"><thead><tr><th>#</th><th>Oefening</th><th>Spiergroep</th><th>Sets</th><th>Herh.</th><th>Gewicht</th><th>Toelichting</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="card">
+      <h2>Voeding voor spierherstel</h2>
+      <p class="note">Alleen de rijen die bij je profiel horen. Nummers verwijzen naar de tab Bronnen.</p>
+      <div class="tbox"><table id="t-voeding"><thead><tr><th>Onderwerp</th><th>Richtlijn</th><th>Praktisch</th><th>Bron</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="two">
+      <div class="card"><h2>Klopt</h2><ul>
+        <li>Spiermassa neemt af vanaf ~30 jaar, ongeveer 1% per jaar, na 70 sneller.</li>
+        <li>Krachttraining 2× per week is de Nederlandse beweegrichtlijn; sarcopenie is deels omkeerbaar.</li>
+        <li>Vitamine D 20 µg per dag vanaf 70 jaar (Gezondheidsraad).</li>
+        <li>Warmte en actief herstel helpen bij stijfheid; bedrust werkt averechts.</li>
+        <li>Alarmsignalen polymyalgia rheumatica: ochtendstijfheid nek/schouders/heupen &gt; 45 min, vermoeidheid, koorts, gewichtsverlies.</li>
+      </ul></div>
+      <div class="card"><h2>Nuance</h2><ul>
+        <li>Vitamine D onder de 70: alleen bij weinig buitenlicht of een donkere huid 10 µg.</li>
+        <li>Magnesium tegen krampen: zwak bewijs. Eerst voeding en vocht; supplement alleen bij tekort.</li>
+        <li>Testosteron daalt ~1% per jaar, maar is zelden de oorzaak van spierpijn; inactiviteit en te weinig eiwit wel.</li>
+        <li>Lichte spierpijn 1–2 dagen na een training is normaal; gewrichtspijn of toenemende pijn niet.</li>
+        <li>Bij hart- of vaatklachten, medicijngebruik of lang niet gesport: check bij de huisarts voor de eerste sessie.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section id="tab-supplementen" data-tabpage="supplementen" hidden style="display:grid;gap:16px">
+    <div class="tiles">
+      <div class="tile"><div class="k">Sterk bewijs</div><div class="v" id="n-sterk">–</div><div class="s">doen echt wat</div></div>
+      <div class="tile"><div class="k">Matig</div><div class="v" id="n-matig">–</div><div class="s">bij tekort of weinig uit voeding</div></div>
+      <div class="tile"><div class="k">Zwak</div><div class="v" id="n-zwak">–</div><div class="s">geld besparen</div></div>
+    </div>
+    <div class="card">
+      <h2>Wat extra nemen voor spierbehoud en soepelheid</h2>
+      <p class="note">Gesorteerd op bewijskracht. Basis: krachttraining, genoeg eiwit, vitamine D. Creatine is het enige supplement met sterk bewijs bij 55-plussers die trainen. Overleg met huisarts of apotheek bij medicijngebruik of nierproblemen.</p>
+      <div class="tbox"><table id="t-supp"><thead><tr><th>Middel</th><th>Bewijs</th><th>Waarvoor</th><th>Dosering</th><th>Opmerking</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="two">
+      <div class="card"><h2>Doen</h2><ul>
+        <li>Eiwit bij elke maaltijd (25–30 g); na de sportschool kwark of een shake.</li>
+        <li>Vitamine D3 volgens leeftijd, elke dag op een vast moment.</li>
+        <li>Creatine 3 g per dag in water of yoghurt, ook op rustdagen.</li>
+        <li>Vette vis 1× per week, of een omega-3-capsule.</li>
+      </ul></div>
+      <div class="card"><h2>Eerst laten meten</h2><ul>
+        <li>Vitamine B12 en magnesium: alleen bij een tekort in het bloed.</li>
+        <li>Calcium: alleen als zuivel grotendeels ontbreekt.</li>
+        <li>Collageen is optioneel bij stijve pezen; verwacht geen wonderen.</li>
+        <li>Glucosamine, curcumine en losse multivitamines: niet nodig.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section id="tab-bronnen" data-tabpage="bronnen" hidden style="display:grid;gap:16px">
+    <div class="card">
+      <h2>Bronnen en herleidbaarheid</h2>
+      <p class="note">Elk advies is terug te voeren op een van deze bronnen; de nummers staan in de tabellen Voeding en Supplementen.</p>
+      <div class="tbox"><table id="t-bron"><thead><tr><th>#</th><th>Bron</th><th>Gebruikt voor</th><th>Type</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="card"><h2>Disclaimer</h2><ul>
+      <li>Samengesteld op 31 oktober 2026 op basis van openbare richtlijnen en onderzoek; geen medisch advies en geen vervanging van huisarts, fysiotherapeut of diëtist.</li>
+      <li>Trainingsschema en weekplan zijn een voorstel voor een gezonde beginner; pas aan bij blessures, hart- of vaatklachten of medicijngebruik.</li>
+      <li>Doseringen gelden voor gezonde volwassenen. Bij nierproblemen geen creatine zonder overleg; bij bloedverdunners omega-3 eerst bespreken.</li>
+      <li>Bewijskracht: sterk = meerdere gerandomiseerde studies of officiële richtlijn; matig = consistent maar klein effect of alleen bij tekort; zwak = weinig of tegenstrijdig onderzoek.</li>
+      <li>Richtlijnen veranderen; controleer Gezondheidsraad en Voedingscentrum jaarlijks.</li>
+    </ul></div>
+  </section>
+</div>
+
+<script>
+(async () => {
+  const $ = (s) => document.querySelector(s);
+  const cell = (t, cls) => { const td = document.createElement('td'); td.textContent = t ?? ''; if (cls) td.className = cls; return td; };
+  const load = async (f) => (await fetch(f)).json();
+  const [week, prog, voeding, supp, bron] = await Promise.all(['/weekplan.json', '/programma.json', '/voeding.json', '/supplementen.json', '/bronnen.json'].map(load));
+
+  // tabs
+  const showTab = (n) => { document.querySelectorAll('[data-tabpage]').forEach((s) => { s.hidden = s.dataset.tabpage !== n; }); document.querySelectorAll('.tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === n))); if (location.hash !== '#' + n) history.replaceState(null, '', '#' + n); };
+  document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+  if (['supplementen', 'bronnen'].includes(location.hash.slice(1))) showTab(location.hash.slice(1));
+
+  // profiel uit logboek (als pincode bekend)
+  let profiel = { geslacht: 'man', leeftijd: 60, gewicht: 80 };
+  try {
+    const pin = localStorage.getItem('logpin');
+    if (pin) { const r = await fetch('/api/log', { headers: { 'x-pin': pin } }); if (r.ok) { const d = await r.json(); if (d.profiel && d.profiel.leeftijd && d.profiel.gewicht) { profiel = { geslacht: d.profiel.geslacht || 'man', leeftijd: Number(d.profiel.leeftijd), gewicht: Number(d.profiel.gewicht) }; $('#prof-note').textContent = `Profiel uit je logboek: ${profiel.geslacht}, ${profiel.leeftijd} jaar, ${profiel.gewicht} kg.`; } } }
+  } catch (e) {}
+
+  $('#eiwit').textContent = `${Math.round(profiel.gewicht * 1.0)}–${Math.round(profiel.gewicht * 1.2)}`;
+  const p = profiel, key = p.geslacht === 'man' ? (p.leeftijd >= 70 ? 'man-70' : 'man-jong') : (p.leeftijd >= 70 ? 'vrouw-70' : p.leeftijd >= 50 ? 'vrouw-50' : 'vrouw-jong');
+  $('#advies-d').textContent = {
+    'man-jong': 'Vitamine D: geen standaard supplement. Onder de 70 is 15–30 min daglicht per dag genoeg; alleen bij weinig buitenkomen of een donkere huid 10 µg per dag.',
+    'man-70': 'Vitamine D: 20 µg (800 IE) per dag, het hele jaar (Gezondheidsraad, mannen vanaf 70).',
+    'vrouw-jong': 'Vitamine D: geen standaard supplement onder de 50; alleen bij weinig buitenkomen, een donkere huid of zwangerschap 10 µg per dag.',
+    'vrouw-50': 'Vitamine D: 10 µg (400 IE) per dag (Gezondheidsraad, vrouwen vanaf 50).',
+    'vrouw-70': 'Vitamine D: 20 µg (800 IE) per dag, het hele jaar (Gezondheidsraad, vrouwen vanaf 70).',
+  }[key];
+
+  $('#n-kracht').textContent = String(week.filter((r) => r.type === 'kracht').length);
+  $('#n-min').textContent = String(week.reduce((s, r) => s + Number(r.minuten), 0));
+
+  const tbW = $('#t-week tbody');
+  for (const r of [...week].sort((a, b) => a.nr - b.nr)) { const tr = document.createElement('tr'); tr.className = r.type; tr.append(cell(r.dag), cell(r.activiteit), cell(String(r.minuten), 'num'), cell(r.doel)); tbW.append(tr); }
+  const tbP = $('#t-prog tbody');
+  for (const r of [...prog].sort((a, b) => a.volgorde - b.volgorde)) { const tr = document.createElement('tr'); tr.append(cell(String(r.volgorde), 'num'), cell(r.oefening), cell(r.spiergroep), cell(String(r.sets), 'num'), cell(r.herhalingen, 'num'), cell(r.gewicht), cell(r.toelichting)); tbP.append(tr); }
+  const tbV = $('#t-voeding tbody');
+  const past = (r) => (r.geslacht === 'alle' || r.geslacht === p.geslacht) && p.leeftijd >= r.van && p.leeftijd <= r.tot;
+  for (const r of voeding.filter(past).sort((a, b) => a.nr - b.nr)) { const tr = document.createElement('tr'); const b = cell(r.bron); if (r.status === 'let-op') { const c = document.createElement('span'); c.className = 'chip let-op'; c.textContent = 'let op'; b.prepend(c, ' '); } tr.append(cell(r.onderwerp), cell(r.richtlijn), cell(r.voorbeeld), b); tbV.append(tr); }
+
+  for (const k of ['sterk', 'matig', 'zwak']) $('#n-' + k).textContent = String(supp.filter((r) => r.bewijs === k).length);
+  const tbS = $('#t-supp tbody');
+  for (const r of [...supp].sort((a, b) => b.score - a.score || a.nr - b.nr)) { const tr = document.createElement('tr'); const bw = cell(''); const c = document.createElement('span'); c.className = 'chip ' + r.bewijs; c.textContent = r.bewijs; bw.append(c); tr.append(cell(r.middel), bw, cell(r.doel), cell(r.dosering), cell(r.opmerking)); tbS.append(tr); }
+  const tbB = $('#t-bron tbody');
+  for (const r of [...bron].sort((a, b) => a.nr - b.nr)) { const tr = document.createElement('tr'); const l = cell(''); const a = document.createElement('a'); a.textContent = r.bron; a.target = '_blank'; a.rel = 'noopener'; if (/^https:\/\//.test(r.url)) a.href = r.url; l.append(a); tr.append(cell(String(r.nr), 'num'), l, cell(r.onderwerp), cell(r.type)); tbB.append(tr); }
+
+  // chart
+  const box = $('#chart-week'), rows = [...week].sort((a, b) => a.nr - b.nr);
+  const W = Math.max(280, box.clientWidth), H = 160, mt = 12, mb = 22, ml = 28, mr = 6, max = Math.max(...rows.map((r) => r.minuten));
+  const bw = (W - ml - mr) / rows.length, y = (v) => mt + (H - mt - mb) * (1 - v / max);
+  const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', '100%');
+  const mk = (t, a) => { const e = document.createElementNS(ns, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  rows.forEach((r, i) => { const x = ml + i * bw + bw * 0.18; svg.append(mk('rect', { x, y: y(r.minuten), width: bw * 0.64, height: y(0) - y(r.minuten), rx: 3, fill: r.type === 'kracht' ? 'var(--gold)' : 'var(--muted)', opacity: r.type === 'kracht' ? 1 : 0.55 })); const t = mk('text', { x: x + bw * 0.32, y: y(r.minuten) - 3, 'text-anchor': 'middle' }); t.textContent = String(r.minuten); svg.append(t); const l = mk('text', { x: x + bw * 0.32, y: H - 6, 'text-anchor': 'middle' }); l.textContent = r.dag.slice(0, 2); svg.append(l); });
+  box.replaceChildren(svg);
+})();
+</script>
+</body>
+</html>

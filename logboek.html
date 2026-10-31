@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Logboek · Spier &amp; Sport</title>
+<meta name="theme-color" content="#0b0f17">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap">
+<link rel="stylesheet" href="/app.css">
+<style>
+  .oef { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) auto; gap: 6px; align-items: end; }
+  .oef label { font-size: 0.7rem; }
+  .sess { display: grid; gap: 8px; }
+  .item { border-top: 1px solid var(--line); padding-top: 8px; display: grid; gap: 4px; }
+  .item:first-child { border-top: 0; padding-top: 0; }
+  .item .head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .item .d { font-family: var(--display); font-weight: 700; }
+  .item .m { font-size: 0.85rem; color: var(--muted); }
+  .confirm { display: none; gap: 8px; align-items: center; font-size: 0.85rem; }
+  .confirm.on { display: flex; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Logboek</h1>
+    <nav class="nav"><a href="/">Dashboard</a><a class="on" href="/logboek.html">Logboek</a></nav>
+  </header>
+  <div class="card" id="pin-card">
+    <h2>Inloggen</h2>
+    <p class="note">Je logboek staat achter een wachtwoord. Vul het één keer in; dit apparaat onthoudt het.</p>
+    <div class="row"><input id="pin" type="password" autocomplete="current-password" placeholder="Wachtwoord" style="max-width:10rem"><button type="button" class="btn primary" id="b-pin">Openen</button><span class="toast" id="toast-pin"></span></div>
+  </div>
+  <span class="status" id="status" hidden></span>
+
+  <div id="app" hidden style="display:grid;gap:16px">
+  <section class="tiles" aria-label="Voortgang">
+    <div class="tile"><div class="k">Deze maand</div><div class="v" id="t-maand">–</div><div class="s">trainingen</div></div>
+    <div class="tile"><div class="k">Reeks</div><div class="v" id="t-reeks">–</div><div class="s">weken op rij</div></div>
+    <div class="tile"><div class="k">Laatste</div><div class="v" id="t-laatst">–</div><div class="s" id="t-laatst-s">nog geen training</div></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-add">
+    <h2 id="h-add">Training toevoegen</h2>
+    <div class="grid">
+      <label>Datum<input type="date" id="f-datum"></label>
+      <label>Soort<select id="f-soort">
+        <option value="kracht">Sportschool (kracht)</option>
+        <option value="wandelen">Wandelen</option>
+        <option value="fietsen">Fietsen</option>
+        <option value="rekken">Rekken / yoga</option>
+        <option value="anders">Anders</option>
+      </select></label>
+      <label>Duur (min)<input type="number" id="f-duur" min="1" max="600" step="1" value="45" inputmode="numeric"></label>
+      <label>Hoe voelde het? (1–5)<input type="number" id="f-gevoel" min="1" max="5" step="1" value="3" inputmode="numeric"></label>
+      <label>Spierpijn erna (0–3)<input type="number" id="f-pijn" min="0" max="3" step="1" value="1" inputmode="numeric"></label>
+    </div>
+    <div id="oefeningen" style="margin-top:10px">
+      <div class="row" style="justify-content:space-between"><strong style="font-size:0.9rem">Oefeningen</strong><button type="button" class="btn small" id="b-oef">+ oefening</button></div>
+      <div id="oef-list" style="display:grid;gap:6px;margin-top:6px"></div>
+    </div>
+    <label style="margin-top:10px">Notitie<textarea id="f-notitie" placeholder="Bijv. rug voelde stijf bij de row; volgende keer lichter"></textarea></label>
+    <div class="row" style="margin-top:10px">
+      <button type="button" class="btn primary" id="b-save">Opslaan</button>
+      <span class="toast" id="toast"></span>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-week">
+    <h2 id="h-week">Beweegminuten per week (laatste 8 weken)</h2>
+    <div id="chart" style="min-height:150px"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-kracht">
+    <h2 id="h-kracht">Opbouw per oefening</h2>
+    <p class="empty" id="kracht-empty">Zodra je gewichten noteert, zie je hier per oefening je laatste gewicht en het verschil met de keer ervoor.</p>
+    <div class="tbox"><table id="kracht-tabel" hidden>
+      <thead><tr><th>Oefening</th><th>Laatst</th><th>Verschil</th><th>Keer</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-log">
+    <h2 id="h-log">Alle trainingen</h2>
+    <p class="empty" id="log-empty">Nog geen trainingen. Voeg hierboven je eerste sportschoolochtend toe.</p>
+    <div class="sess" id="log"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-prof">
+    <h2 id="h-prof">Profiel</h2>
+    <div class="grid">
+      <label>Geslacht<select id="p-geslacht"><option value="man">Man</option><option value="vrouw">Vrouw</option></select></label>
+      <label>Leeftijd<input type="number" id="p-leeftijd" min="18" max="110" inputmode="numeric"></label>
+      <label>Gewicht (kg)<input type="number" id="p-gewicht" min="35" max="250" inputmode="numeric"></label>
+    </div>
+    <div class="row" style="margin-top:10px"><button type="button" class="btn" id="b-prof">Profiel opslaan</button><span class="toast" id="toast-prof"></span></div>
+    <div class="row" style="margin-top:14px"><button type="button" class="btn small" id="b-export">Exporteer JSON</button><button type="button" class="btn small" id="b-pinweg">Uitloggen op dit apparaat</button></div>
+  </section>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const STANDAARD = ['Leg press', 'Chest press', 'Seated row', 'Box squat', 'Shoulder press', 'Plank'];
+  const todayISO = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+  const fmtDate = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d).toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' }); };
+  const SOORT = { kracht: 'Sportschool', wandelen: 'Wandelen', fietsen: 'Fietsen', rekken: 'Rekken', anders: 'Anders' };
+  let doc = { sessies: [], profiel: {} }, pin = null, saving = false;
+  $('#f-datum').value = todayISO();
+
+  const api = async (method, body) => {
+    const r = await fetch('/api/log', { method, headers: { 'x-pin': pin, 'content-type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+    if (r.status === 401) throw Object.assign(new Error('pin'), { code: 'pin' });
+    if (!r.ok) throw new Error('server');
+    return r.json();
+  };
+  const toast = (el, msg, err) => { el.textContent = msg; el.classList.toggle('err', !!err); setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 4000); };
+  const save = async (el) => {
+    if (saving) return; saving = true;
+    try { doc = await api('PUT', doc); toast(el, 'Opgeslagen.'); render(); }
+    catch (e) { toast(el, e.code === 'pin' ? 'Wachtwoord klopt niet meer.' : 'Opslaan mislukt, probeer het nog eens.', true); }
+    saving = false;
+  };
+
+  // pincode
+  const unlock = async (p) => {
+    pin = p;
+    try { doc = await api('GET'); }
+    catch (e) { pin = null; toast($('#toast-pin'), e.code === 'pin' ? 'Onjuist wachtwoord.' : 'Opslag niet bereikbaar.', true); return false; }
+    try { localStorage.setItem('logpin', p); } catch (x) {}
+    $('#pin-card').hidden = true; $('#app').hidden = false;
+    $('#status').hidden = false; $('#status').textContent = doc.bijgewerkt ? 'Laatst opgeslagen ' + new Date(doc.bijgewerkt).toLocaleString('nl-NL') : 'Nog niets opgeslagen';
+    const pr = doc.profiel || {}; $('#p-geslacht').value = pr.geslacht || 'man'; $('#p-leeftijd').value = pr.leeftijd ?? ''; $('#p-gewicht').value = pr.gewicht ?? '';
+    render(); return true;
+  };
+  $('#b-pin').addEventListener('click', () => unlock($('#pin').value.trim()));
+  $('#pin').addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock($('#pin').value.trim()); });
+  $('#b-pinweg').addEventListener('click', () => { try { localStorage.removeItem('logpin'); } catch (x) {} location.reload(); });
+  try { const p = localStorage.getItem('logpin'); if (p) unlock(p); } catch (x) {}
+
+  // oefeningen
+  const oefRow = (naam = '', gewicht = '', herh = '') => {
+    const row = document.createElement('div'); row.className = 'oef';
+    row.innerHTML = `<label>Oefening<input list="oef-opties" class="o-naam" placeholder="Leg press"></label><label>Gewicht (kg)<input type="number" class="o-gewicht" min="0" max="500" step="0.5" inputmode="decimal"></label><label>Herh.<input class="o-herh" placeholder="2×12"></label><button type="button" class="btn small danger" aria-label="Verwijder oefening">×</button>`;
+    row.querySelector('.o-naam').value = naam; row.querySelector('.o-gewicht').value = gewicht; row.querySelector('.o-herh').value = herh;
+    row.querySelector('button').addEventListener('click', () => row.remove());
+    $('#oef-list').append(row);
+  };
+  const dl = document.createElement('datalist'); dl.id = 'oef-opties'; STANDAARD.forEach((n) => { const o = document.createElement('option'); o.value = n; dl.append(o); }); document.body.append(dl);
+  $('#b-oef').addEventListener('click', () => oefRow());
+  const resetOef = () => { $('#oef-list').replaceChildren(); if ($('#f-soort').value === 'kracht') STANDAARD.slice(0, 3).forEach((n) => oefRow(n)); };
+  $('#f-soort').addEventListener('change', () => { $('#oefeningen').hidden = $('#f-soort').value !== 'kracht'; resetOef(); $('#f-duur').value = $('#f-soort').value === 'kracht' ? 45 : 30; });
+  resetOef();
+
+  $('#b-save').addEventListener('click', async () => {
+    const datum = $('#f-datum').value;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(datum)) return toast($('#toast'), 'Vul een datum in.', true);
+    const soort = $('#f-soort').value;
+    const oef = soort !== 'kracht' ? [] : [...document.querySelectorAll('#oef-list .oef')].map((r) => ({ naam: r.querySelector('.o-naam').value.trim(), gewicht: Number(r.querySelector('.o-gewicht').value) || 0, herh: r.querySelector('.o-herh').value.trim() })).filter((o) => o.naam);
+    doc.sessies.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), datum, soort, duur: Math.max(1, Math.min(600, Number($('#f-duur').value) || 0)), gevoel: Number($('#f-gevoel').value) || 3, pijn: Number($('#f-pijn').value) || 0, oefeningen: oef, notitie: $('#f-notitie').value.trim(), aangemaakt: new Date().toISOString() });
+    $('#b-save').disabled = true; await save($('#toast')); $('#b-save').disabled = false;
+    $('#f-notitie').value = ''; resetOef();
+  });
+  $('#b-prof').addEventListener('click', async () => {
+    doc.profiel = { geslacht: $('#p-geslacht').value, leeftijd: Number($('#p-leeftijd').value) || null, gewicht: Number($('#p-gewicht').value) || null, bijgewerkt: new Date().toISOString() };
+    await save($('#toast-prof'));
+  });
+  $('#b-export').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `logboek-${todayISO()}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  const isoWeekKey = (iso) => { const [y, m, d] = iso.split('-').map(Number); const dt = new Date(Date.UTC(y, m - 1, d)); const day = dt.getUTCDay() || 7; dt.setUTCDate(dt.getUTCDate() + 4 - day); const y0 = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1)); return `${dt.getUTCFullYear()}-W${String(Math.ceil(((dt - y0) / 86400000 + 1) / 7)).padStart(2, '0')}`; };
+  const weekStart = (offset) => { const d = new Date(); const day = d.getDay() || 7; d.setDate(d.getDate() - day + 1 - 7 * offset); d.setHours(0, 0, 0, 0); return d; };
+  const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  const render = () => {
+    const list = [...doc.sessies].sort((a, b) => (b.datum + b.aangemaakt).localeCompare(a.datum + a.aangemaakt));
+    const now = todayISO(), maand = now.slice(0, 7);
+    $('#t-maand').textContent = String(list.filter((s) => s.datum.slice(0, 7) === maand).length);
+    const weken = new Set(list.map((s) => isoWeekKey(s.datum)));
+    let reeks = 0, off = weken.has(isoWeekKey(now)) ? 0 : 1;
+    while (weken.has(isoWeekKey(iso(weekStart(off))))) { reeks++; off++; }
+    $('#t-reeks').textContent = String(reeks);
+    if (list.length) { $('#t-laatst').textContent = fmtDate(list[0].datum).replace(/^\w+\.?\s/, ''); $('#t-laatst-s').textContent = SOORT[list[0].soort] || list[0].soort; }
+    else { $('#t-laatst').textContent = '–'; $('#t-laatst-s').textContent = 'nog geen training'; }
+
+    const log = $('#log'); log.replaceChildren(); $('#log-empty').hidden = list.length > 0;
+    for (const s of list) {
+      const it = document.createElement('div'); it.className = 'item';
+      const head = document.createElement('div'); head.className = 'head';
+      const d = document.createElement('span'); d.className = 'd'; d.textContent = fmtDate(s.datum);
+      const right = document.createElement('span'); right.className = 'row';
+      const chip = document.createElement('span'); chip.className = `chip ${s.soort}`; chip.textContent = `${SOORT[s.soort] || s.soort} · ${s.duur} min`;
+      const del = document.createElement('button'); del.type = 'button'; del.className = 'btn small danger'; del.textContent = 'Verwijder';
+      const conf = document.createElement('span'); conf.className = 'confirm';
+      const ja = document.createElement('button'); ja.type = 'button'; ja.className = 'btn small danger'; ja.textContent = 'Ja, verwijder';
+      const nee = document.createElement('button'); nee.type = 'button'; nee.className = 'btn small'; nee.textContent = 'Nee';
+      conf.append('Zeker? ', ja, nee);
+      del.addEventListener('click', () => { conf.classList.add('on'); del.hidden = true; });
+      nee.addEventListener('click', () => { conf.classList.remove('on'); del.hidden = false; });
+      ja.addEventListener('click', async () => { doc.sessies = doc.sessies.filter((x) => x.id !== s.id); await save($('#toast')); });
+      right.append(chip, del, conf); head.append(d, right); it.append(head);
+      const m = document.createElement('div'); m.className = 'm';
+      const pijn = document.createElement('span'); pijn.className = `chip pijn${s.pijn}`; pijn.textContent = `spierpijn ${s.pijn}/3`;
+      const gev = document.createElement('span'); gev.className = 'chip'; gev.textContent = `gevoel ${s.gevoel}/5`;
+      m.append(gev, ' ', pijn);
+      if (s.oefeningen && s.oefeningen.length) m.append(' · ' + s.oefeningen.map((o) => `${o.naam}${o.gewicht ? ' ' + o.gewicht + ' kg' : ''}${o.herh ? ' ' + o.herh : ''}`).join(', '));
+      it.append(m);
+      if (s.notitie) { const n = document.createElement('div'); n.className = 'm'; n.textContent = s.notitie; it.append(n); }
+      log.append(it);
+    }
+
+    const per = new Map();
+    for (const s of [...list].reverse()) for (const o of (s.oefeningen || [])) { if (!o.gewicht) continue; const k = o.naam.toLowerCase(); if (!per.has(k)) per.set(k, { naam: o.naam, hist: [] }); per.get(k).hist.push(o.gewicht); }
+    const tb = $('#kracht-tabel tbody'); tb.replaceChildren();
+    $('#kracht-tabel').hidden = per.size === 0; $('#kracht-empty').hidden = per.size > 0;
+    for (const { naam, hist } of per.values()) {
+      const last = hist[hist.length - 1], prev = hist.length > 1 ? hist[hist.length - 2] : null;
+      const tr = document.createElement('tr');
+      const c = (t, cls) => { const td = document.createElement('td'); td.textContent = t; if (cls) td.className = cls; return td; };
+      const diff = prev === null ? '–' : (last - prev > 0 ? '+' : '') + (last - prev).toLocaleString('nl-NL') + ' kg';
+      tr.append(c(naam), c(last.toLocaleString('nl-NL') + ' kg', 'num'), c(diff, 'num ' + (prev === null ? '' : last > prev ? 'up' : last < prev ? 'down' : '')), c(String(hist.length), 'num'));
+      tb.append(tr);
+    }
+
+    const weeks = []; for (let i = 7; i >= 0; i--) { const st = weekStart(i); weeks.push({ key: isoWeekKey(iso(st)), label: `${st.getDate()}/${st.getMonth() + 1}`, min: 0 }); }
+    for (const s of list) { const w = weeks.find((x) => x.key === isoWeekKey(s.datum)); if (w) w.min += Number(s.duur) || 0; }
+    const box = $('#chart'); const W = Math.max(280, box.clientWidth), H = 150, mt = 10, mb = 22, ml = 30, mr = 6;
+    const max = Math.max(150, ...weeks.map((w) => w.min));
+    const bw = (W - ml - mr) / 8, y = (v) => mt + (H - mt - mb) * (1 - v / max);
+    const ns = 'http://www.w3.org/2000/svg'; const svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', '100%');
+    const mk = (t, a) => { const e = document.createElementNS(ns, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+    svg.append(mk('line', { x1: ml, x2: W - mr, y1: y(150), y2: y(150), stroke: 'var(--line)', 'stroke-dasharray': '4 4' }));
+    const rl = mk('text', { x: ml - 4, y: y(150) + 4, 'text-anchor': 'end' }); rl.textContent = '150'; svg.append(rl);
+    const z = mk('text', { x: ml - 4, y: y(0) + 4, 'text-anchor': 'end' }); z.textContent = '0'; svg.append(z);
+    weeks.forEach((w, i) => {
+      const x = ml + i * bw + bw * 0.18;
+      svg.append(mk('rect', { x, y: y(w.min), width: bw * 0.64, height: Math.max(0, y(0) - y(w.min)), rx: 3, fill: w.min >= 150 ? 'var(--gold)' : 'var(--muted)', opacity: w.min >= 150 ? 1 : 0.6 }));
+      if (w.min) { const t = mk('text', { x: x + bw * 0.32, y: y(w.min) - 3, 'text-anchor': 'middle' }); t.textContent = String(w.min); svg.append(t); }
+      const l = mk('text', { x: x + bw * 0.32, y: H - 6, 'text-anchor': 'middle' }); l.textContent = w.label; svg.append(l);
+    });
+    box.replaceChildren(svg);
+  };
+  window.addEventListener('resize', () => { if (!$('#app').hidden) render(); });
+})();
+</script>
+
+</body>
+</html>

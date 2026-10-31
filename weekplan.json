@@ -1,0 +1,9 @@
+[
+ {"dag":"Maandag","nr":1,"activiteit":"Wandelen (stevig tempo)","type":"beweging","minuten":30,"doel":"Doorbloeding, actief herstel"},
+ {"dag":"Dinsdag","nr":2,"activiteit":"Rustdag + 10 min rekken","type":"herstel","minuten":10,"doel":"Soepelheid heupen, rug, schouders"},
+ {"dag":"Woensdag","nr":3,"activiteit":"Fietsen of wandelen","type":"beweging","minuten":30,"doel":"Conditie, gewrichten in beweging"},
+ {"dag":"Donderdag","nr":4,"activiteit":"Rustdag + 10 min rekken","type":"herstel","minuten":10,"doel":"Soepelheid"},
+ {"dag":"Vrijdag","nr":5,"activiteit":"Wandelen (stevig tempo)","type":"beweging","minuten":30,"doel":"Doorbloeding"},
+ {"dag":"Zaterdag","nr":6,"activiteit":"Sportschool, ochtend: full-body kracht","type":"kracht","minuten":45,"doel":"Spiermassa behouden en opbouwen"},
+ {"dag":"Zondag","nr":7,"activiteit":"Rustige wandeling","type":"herstel","minuten":20,"doel":"Actief herstel na de krachttraining"}
+]
