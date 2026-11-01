@@ -106,9 +106,16 @@
 
   <section id="tab-boodschappen" data-tabpage="boodschappen" hidden style="display:grid;gap:16px">
     <div class="tiles">
-      <div class="tile"><div class="k">Eiwitdoel per dag</div><div class="v" id="b-doel">–</div><div class="s">gram, uit je profiel</div></div>
+      <div class="tile"><div class="k">Eiwitdoel per dag</div><div class="v" id="b-doel">–</div><div class="s">gram, uit je gewicht</div></div>
+      <div class="tile"><div class="k">Per hoofdmaaltijd</div><div class="v" id="b-maaltijd">–</div><div class="s">gram, verdeeld over 3 maaltijden</div></div>
       <div class="tile"><div class="k">Voorbeelddag: eiwit</div><div class="v" id="b-dag-eiwit">–</div><div class="s">gram, zie hieronder</div></div>
       <div class="tile"><div class="k">Voorbeelddag: vitamine D</div><div class="v" id="b-dag-vitd">–</div><div class="s">µg uit eten alleen</div></div>
+    </div>
+    <div class="card">
+      <h2>Jouw dagadvies</h2>
+      <p class="note" id="b-profielnote"></p>
+      <p id="b-advies"></p>
+      <p class="note" style="margin-top:8px">Vitamine D hangt af van leeftijd en geslacht, niet van je gewicht. Calcium vanaf 50 jaar: bij 4 zuivelporties per dag is geen supplement nodig, bij 1–3 porties 500 mg extra, zonder zuivel 1.000 mg extra (Consumentenbond).</p>
     </div>
     <div class="card">
       <h2>Wat haal je in de supermarkt</h2>
@@ -196,6 +203,9 @@
   const nl1 = new Intl.NumberFormat('nl-NL', { maximumFractionDigits: 1 });
   const winkel = boodsch.map((r) => ({ ...r, eiwit_portie: Math.round(r.portie_g * r.eiwit_100) / 100, vitd_portie: Math.round(r.portie_g * r.vitd_100) / 100 }));
   const dag = dagplan.map((d) => { const pr = boodsch.find((b) => b.nr === d.product_nr); return { ...d, product: pr.product, eiwit: Math.round(d.gram * pr.eiwit_100) / 100, vitd: Math.round(d.gram * pr.vitd_100) / 100 }; });
+  $('#b-maaltijd').textContent = `${Math.round(profiel.gewicht * 1.0 / 3)}–${Math.round(profiel.gewicht * 1.2 / 3)}`;
+  $('#b-advies').textContent = $('#advies-d').textContent;
+  $('#b-profielnote').textContent = $('#prof-note').textContent.startsWith('Profiel uit') ? $('#prof-note').textContent + ' Pas het aan in het logboek.' : 'Standaardwaarden (man, 60 jaar, 80 kg). Vul je gewicht, leeftijd en geslacht in bij het logboek; dan wordt dit advies persoonlijk.';
   $('#b-doel').textContent = `${Math.round(profiel.gewicht * 1.0)}–${Math.round(profiel.gewicht * 1.2)}`;
   $('#b-dag-eiwit').textContent = nl1.format(Math.round(dag.reduce((s, r) => s + r.eiwit, 0)));
   $('#b-dag-vitd').textContent = nl1.format(Math.round(dag.reduce((s, r) => s + r.vitd, 0) * 10) / 10);
