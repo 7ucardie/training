@@ -19,6 +19,7 @@
   <div class="tabs" role="tablist">
     <button type="button" class="tab" data-tab="overzicht" aria-selected="true">Overzicht</button>
     <button type="button" class="tab" data-tab="supplementen" aria-selected="false">Supplementen</button>
+    <button type="button" class="tab" data-tab="boodschappen" aria-selected="false">Boodschappen</button>
     <button type="button" class="tab" data-tab="bronnen" aria-selected="false">Bronnen</button>
   </div>
 
@@ -103,6 +104,34 @@
     </div>
   </section>
 
+  <section id="tab-boodschappen" data-tabpage="boodschappen" hidden style="display:grid;gap:16px">
+    <div class="tiles">
+      <div class="tile"><div class="k">Eiwitdoel per dag</div><div class="v" id="b-doel">–</div><div class="s">gram, uit je profiel</div></div>
+      <div class="tile"><div class="k">Voorbeelddag: eiwit</div><div class="v" id="b-dag-eiwit">–</div><div class="s">gram, zie hieronder</div></div>
+      <div class="tile"><div class="k">Voorbeelddag: vitamine D</div><div class="v" id="b-dag-vitd">–</div><div class="s">µg uit eten alleen</div></div>
+    </div>
+    <div class="card">
+      <h2>Wat haal je in de supermarkt</h2>
+      <p class="note">Basisproducten die je in elke supermarkt vindt. Waarden per portie zijn uitgerekend uit waarden per 100 g. Een getal met het label schatting is een gangbare richtwaarde die niet in een geraadpleegde bron terug te vinden was; het etiket op de verpakking gaat altijd voor. Alleen het vitamine D-assortiment van Albert Heijn is nagelopen, Jumbo en Aldi niet.</p>
+      <div class="row" role="group" aria-label="Sorteren" style="margin-bottom:10px">
+        <button type="button" class="tab sortbtn" data-sort="nr" aria-pressed="true">Productgroep</button>
+        <button type="button" class="tab sortbtn" data-sort="eiwit_portie" aria-pressed="false">Meeste eiwit</button>
+        <button type="button" class="tab sortbtn" data-sort="vitd_portie" aria-pressed="false">Meeste vitamine D</button>
+      </div>
+      <div class="tbox"><table id="t-winkel"><thead><tr><th>Product</th><th>Portie</th><th>Eiwit (g)</th><th>Vit. D (µg)</th><th>Vinden bij</th><th>Opmerking</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="card">
+      <h2>Voorbeelddag</h2>
+      <p class="note">Een dag die in het eiwitdoel past, opgebouwd uit bovenstaande producten, inclusief een zalmdag. Zonder vette vis blijft de vitamine D uit eten veel lager.</p>
+      <div class="tbox"><table id="t-dag"><thead><tr><th>Moment</th><th>Product</th><th>Gram</th><th>Eiwit (g)</th><th>Vit. D (µg)</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="card">
+      <h2>Vitamine D-supplement in de winkel</h2>
+      <p class="note">Zelfs een dag met zalm en een ei haalt de 20 µg niet die de Gezondheidsraad vanaf 70 jaar adviseert. Bij Albert Heijn staat geen supplement van precies 20 µg in het assortiment; 25 µg is het dichtstbijzijnde en ligt ruim onder de bovengrens van 100 µg per dag. Neem het in elk geval bij een maaltijd met vet.</p>
+      <div class="tbox"><table id="t-wsupp"><thead><tr><th>Product</th><th>Winkel</th><th>µg per stuk</th><th>Verpakking</th><th>Opmerking</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
   <section id="tab-bronnen" data-tabpage="bronnen" hidden style="display:grid;gap:16px">
     <div class="card">
       <h2>Bronnen en herleidbaarheid</h2>
@@ -124,12 +153,12 @@
   const $ = (s) => document.querySelector(s);
   const cell = (t, cls) => { const td = document.createElement('td'); td.textContent = t ?? ''; if (cls) td.className = cls; return td; };
   const load = async (f) => (await fetch(f)).json();
-  const [week, prog, voeding, supp, bron] = await Promise.all(['/weekplan.json', '/programma.json', '/voeding.json', '/supplementen.json', '/bronnen.json'].map(load));
+  const [week, prog, voeding, supp, bron, boodsch, dagplan, wsupp] = await Promise.all(['/weekplan.json', '/programma.json', '/voeding.json', '/supplementen.json', '/bronnen.json', '/boodschappen.json', '/dagplan.json', '/winkelsupp.json'].map(load));
 
   // tabs
   const showTab = (n) => { document.querySelectorAll('[data-tabpage]').forEach((s) => { s.hidden = s.dataset.tabpage !== n; }); document.querySelectorAll('.tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === n))); if (location.hash !== '#' + n) history.replaceState(null, '', '#' + n); };
   document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
-  if (['supplementen', 'bronnen'].includes(location.hash.slice(1))) showTab(location.hash.slice(1));
+  if (['supplementen', 'boodschappen', 'bronnen'].includes(location.hash.slice(1))) showTab(location.hash.slice(1));
 
   // profiel uit logboek (als pincode bekend)
   let profiel = { geslacht: 'man', leeftijd: 60, gewicht: 80 };
@@ -162,6 +191,31 @@
   for (const k of ['sterk', 'matig', 'zwak']) $('#n-' + k).textContent = String(supp.filter((r) => r.bewijs === k).length);
   const tbS = $('#t-supp tbody');
   for (const r of [...supp].sort((a, b) => b.score - a.score || a.nr - b.nr)) { const tr = document.createElement('tr'); const bw = cell(''); const c = document.createElement('span'); c.className = 'chip ' + r.bewijs; c.textContent = r.bewijs; bw.append(c); tr.append(cell(r.middel), bw, cell(r.doel), cell(r.dosering), cell(r.opmerking)); tbS.append(tr); }
+
+  // Boodschappen
+  const nl1 = new Intl.NumberFormat('nl-NL', { maximumFractionDigits: 1 });
+  const winkel = boodsch.map((r) => ({ ...r, eiwit_portie: Math.round(r.portie_g * r.eiwit_100) / 100, vitd_portie: Math.round(r.portie_g * r.vitd_100) / 100 }));
+  const dag = dagplan.map((d) => { const pr = boodsch.find((b) => b.nr === d.product_nr); return { ...d, product: pr.product, eiwit: Math.round(d.gram * pr.eiwit_100) / 100, vitd: Math.round(d.gram * pr.vitd_100) / 100 }; });
+  $('#b-doel').textContent = `${Math.round(profiel.gewicht * 1.0)}–${Math.round(profiel.gewicht * 1.2)}`;
+  $('#b-dag-eiwit').textContent = nl1.format(Math.round(dag.reduce((s, r) => s + r.eiwit, 0)));
+  $('#b-dag-vitd').textContent = nl1.format(Math.round(dag.reduce((s, r) => s + r.vitd, 0) * 10) / 10);
+  let sortKey = 'nr';
+  const drawWinkel = () => {
+    const tb = $('#t-winkel tbody'); tb.replaceChildren();
+    const rows = [...winkel].sort((a, b) => sortKey === 'nr' ? a.nr - b.nr : b[sortKey] - a[sortKey] || a.nr - b.nr);
+    for (const r of rows) {
+      const tr = document.createElement('tr'); const note = cell(r.opmerking);
+      if (r.basis === 'schatting') { const c = document.createElement('span'); c.className = 'chip let-op'; c.textContent = 'schatting'; note.prepend(c, ' '); }
+      tr.append(cell(r.product), cell(`${r.portie} (${r.portie_g} g)`), cell(nl1.format(r.eiwit_portie), 'num'), cell(nl1.format(r.vitd_portie), 'num'), cell(r.vinden), note);
+      tb.append(tr);
+    }
+  };
+  document.querySelectorAll('.sortbtn').forEach((b) => b.addEventListener('click', () => { sortKey = b.dataset.sort; document.querySelectorAll('.sortbtn').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); drawWinkel(); }));
+  drawWinkel();
+  const tbD = $('#t-dag tbody');
+  for (const r of dag) { const tr = document.createElement('tr'); tr.append(cell(r.moment), cell(r.product), cell(nl1.format(r.gram), 'num'), cell(nl1.format(r.eiwit), 'num'), cell(nl1.format(r.vitd), 'num')); tbD.append(tr); }
+  const tbW2 = $('#t-wsupp tbody');
+  for (const r of wsupp) { const tr = document.createElement('tr'); tr.append(cell(r.product), cell(r.winkel), cell(nl1.format(r.ug), 'num'), cell(r.aantal), cell(r.opmerking)); tbW2.append(tr); }
   const tbB = $('#t-bron tbody');
   for (const r of [...bron].sort((a, b) => a.nr - b.nr)) { const tr = document.createElement('tr'); const l = cell(''); const a = document.createElement('a'); a.textContent = r.bron; a.target = '_blank'; a.rel = 'noopener'; if (/^https:\/\//.test(r.url)) a.href = r.url; l.append(a); tr.append(cell(String(r.nr), 'num'), l, cell(r.onderwerp), cell(r.type)); tbB.append(tr); }
 

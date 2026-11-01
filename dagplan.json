@@ -1,0 +1,50 @@
+[
+ {
+  "nr": 1,
+  "moment": "Ontbijt",
+  "product_nr": 1,
+  "gram": 150
+ },
+ {
+  "nr": 2,
+  "moment": "Ontbijt",
+  "product_nr": 19,
+  "gram": 40
+ },
+ {
+  "nr": 3,
+  "moment": "Ontbijt",
+  "product_nr": 16,
+  "gram": 15
+ },
+ {
+  "nr": 4,
+  "moment": "Lunch",
+  "product_nr": 18,
+  "gram": 70
+ },
+ {
+  "nr": 5,
+  "moment": "Lunch",
+  "product_nr": 6,
+  "gram": 40
+ },
+ {
+  "nr": 6,
+  "moment": "Lunch",
+  "product_nr": 4,
+  "gram": 50
+ },
+ {
+  "nr": 7,
+  "moment": "Avond",
+  "product_nr": 7,
+  "gram": 120
+ },
+ {
+  "nr": 8,
+  "moment": "Avond",
+  "product_nr": 15,
+  "gram": 120
+ }
+]

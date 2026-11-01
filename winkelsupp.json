@@ -1,0 +1,38 @@
+[
+ {
+  "nr": 1,
+  "product": "Care Vitamine D3 25 µg, tabletten",
+  "winkel": "Albert Heijn",
+  "ug": 25,
+  "vorm": "Tablet",
+  "aantal": "300 stuks",
+  "opmerking": "Dichtstbij 20 µg; ruim onder de bovengrens van 100 µg per dag."
+ },
+ {
+  "nr": 2,
+  "product": "Care Vitamine D3 25 µg, druppels",
+  "winkel": "Albert Heijn",
+  "ug": 25,
+  "vorm": "Druppels",
+  "aantal": "25 ml",
+  "opmerking": "Handig als je geen tabletten wilt."
+ },
+ {
+  "nr": 3,
+  "product": "Lucovitaal Vitamine D3 25 mcg, capsules",
+  "winkel": "Albert Heijn",
+  "ug": 25,
+  "vorm": "Capsule",
+  "aantal": "120 stuks",
+  "opmerking": "Ander merk, zelfde dosering."
+ },
+ {
+  "nr": 4,
+  "product": "Lucovitaal Vitamine D3 10 mcg",
+  "winkel": "Albert Heijn",
+  "ug": 10,
+  "vorm": "Tablet",
+  "aantal": "60 stuks",
+  "opmerking": "Past bij het advies van 10 µg (vrouwen 50–70 jaar, of mannen en vrouwen tot 70 met een risicofactor)."
+ }
+]
